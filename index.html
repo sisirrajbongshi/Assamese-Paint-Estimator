@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="as">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assamese Paint Estimator | ৰং কেলকুলেটৰ</title>
+  <meta name="description" content="A bilingual web-based paint estimator for Assamese users. Calculate wall area, paint quantity, and cost easily.">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f6fc;
+      color: #222;
+      margin: 0;
+      padding: 20px;
+    }
+    h1, h2 {
+      color: #0d47a1;
+      text-align: center;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: 500;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 15px;
+    }
+    button {
+      background: #0d47a1;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 20px;
+    }
+    button:hover {
+      background: #08306b;
+    }
+    .result {
+      background: #e3f2fd;
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 17px;
+      white-space: pre-line;
+    }
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 14px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <h1>ৰং কেলকুলেটৰ (Assamese Paint Estimator)</h1>
+  <div class="container">
+    <p style="text-align:center;">এটা সহজ ৱেব এপ্লিকেচন যি ৰুমৰ ক্ষেত্ৰফল, ৰঙৰ পৰিমাণ আৰু মুঠ খৰচ হিচাপ কৰে।</p>
+
+    <label>দেৱালৰ দৈৰ্ঘ্য (ফুটত):</label>
+    <input type="number" id="length" placeholder="উদাহৰণ: 12">
+
+    <label>দেৱালৰ উচ্চতা (ফুটত):</label>
+    <input type="number" id="height" placeholder="উদাহৰণ: 10">
+
+    <label>দেৱালৰ সংখ্যা:</label>
+    <input type="number" id="numWalls" value="4" min="1">
+
+    <label>ৰঙৰ প্ৰকাৰ (Coverage):</label>
+    <select id="coverage">
+      <option value="120">এনামেল / তেলৰ ৰঙ (১ লিটাৰে 120 বৰ্গফুট)</option>
+      <option value="150">প্লাষ্টিক পেইণ্ট (১ লিটাৰে 150 বৰ্গফুট)</option>
+      <option value="180">এমালচন পেইণ্ট (১ লিটাৰে 180 বৰ্গফুট)</option>
+    </select>
+
+    <label>পত্ৰ (Number of Coats):</label>
+    <select id="coats">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+    </select>
+
+    <label>১ লিটাৰ ৰঙৰ মূল্য (টকা):</label>
+    <input type="number" id="pricePerLitre" value="0" placeholder="উদাহৰণ: 450">
+
+    <button onclick="calculatePaint()">হিচাপ উলিয়াওক (Calculate)</button>
+
+    <div id="result" class="result"></div>
+  </div>
+
+  <footer>
+    &copy; Dr. Sisir Kumar Rajbongshi | Assistant Professor, PDUAM Amjonga, Goalpara, Assam - 783124
+  </footer>
+
+  <script>
+    function calculatePaint() {
+      const length = parseFloat(document.getElementById("length").value);
+      const height = parseFloat(document.getElementById("height").value);
+      const numWalls = parseInt(document.getElementById("numWalls").value);
+      const coverage = parseFloat(document.getElementById("coverage").value);
+      const coats = parseInt(document.getElementById("coats").value);
+      const pricePerLitre = parseFloat(document.getElementById("pricePerLitre").value);
+
+      if (isNaN(length) || isNaN(height) || isNaN(numWalls) || isNaN(coverage) || isNaN(coats)) {
+        document.getElementById("result").innerText = "অনুগ্ৰহ কৰি সকলো মান সঠিকভাবে দিয়ক (Please enter all required values correctly).";
+        return;
+      }
+
+      // total area of walls
+      const totalArea = length * height * numWalls;
+
+      // total paint needed in liters
+      const totalPaintLitres = (totalArea * coats) / coverage;
+
+      // total cost
+      const totalCost = totalPaintLitres * pricePerLitre;
+
+      // display
+      let resultText = 
+        `মুঠ ক্ষেত্ৰফল (Total Area): ${totalArea.toFixed(2)} বৰ্গফুট\n` +
+        `ৰঙৰ প্ৰয়োজনীয়তা (Required Paint): ${totalPaintLitres.toFixed(2)} লিটাৰ\n` +
+        `মুঠ খৰচ (Total Cost): ₹${totalCost.toFixed(2)}\n\n` +
+        `প্ৰতি লিটাৰে ${coverage} বৰ্গফুট কভাৰ কৰে। ${coats} তৰপ ৰং কৰা হ’ব।`;
+
+      document.getElementById("result").innerText = resultText;
+    }
+  </script>
+</body>
+</html>
